@@ -1,4 +1,4 @@
-import { app } from "electron";
+import { app, ipcMain } from "electron";
 import serve from "electron-serve";
 import { createWindow } from "./helpers";
 
@@ -14,11 +14,15 @@ if (isProd) {
   await app.whenReady();
 
   const mainWindow = createWindow("main", {
-    width: 1000,
-    height: 600,
+    width: 300,
+    height: 150,
     transparent: true,
     frame: false,
+    alwaysOnTop: true,
+    useContentSize: true,
   });
+  mainWindow.setSize(300, 150);
+  mainWindow.setResizable(false);
 
   if (isProd) {
     await mainWindow.loadURL("app://./home.html");
@@ -27,6 +31,16 @@ if (isProd) {
     await mainWindow.loadURL(`http://localhost:${port}/home`);
     mainWindow.webContents.openDevTools();
   }
+
+  ipcMain.on("resizeWindow", (event, arg) => {
+    mainWindow.setResizable(true);
+    mainWindow.setSize(arg[0], arg[1]);
+    mainWindow.setResizable(false);
+  });
+
+  ipcMain.on("closeWindow", () => {
+    mainWindow.close();
+  });
 })();
 
 app.on("window-all-closed", () => {
