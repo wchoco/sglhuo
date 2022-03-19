@@ -43,6 +43,10 @@ function Home() {
         <Grid item xs={6}>
           <VisualyzerItem name="SIMPLE" href="/simple" />
         </Grid>
+
+        <Grid item xs={6}>
+          <VisualyzerItem name="CIRCLE" href="/circle" />
+        </Grid>
       </Grid>
     </Box>
   );
