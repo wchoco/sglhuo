@@ -9,7 +9,7 @@ const height = 400;
 const bin = 128;
 const binWidth = 2;
 const binHeight = height / 2;
-const fps = 30;
+const fps = 120;
 const radius = 200;
 const secDegree = 20;
 
@@ -53,13 +53,19 @@ const init = (svgRef: RefObject<SVGSVGElement>) => {
       return `rotate(${(i / bin) * 360 - 90})translate(0,${radius})`;
     });
 
-  node.append("rect").attr("fill", "#fff").attr("transform", "rotate(180)");
+  node
+    .append("rect")
+    .attr("fill", "#fff")
+    .attr("transform", "rotate(180)")
+    .attr("width", binWidth);
 
   let rotate = 0;
   const draw = (data: Uint8Array) => {
     d3.selectAll("rect")
       .data(data)
-      .attr("width", binWidth)
+      .transition()
+      .duration(1000 / fps)
+      .ease(d3.easeExpOut)
       .attr("height", (d) => (d * binHeight) / 255 + 1);
 
     g.attr(
